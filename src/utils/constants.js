@@ -1,9 +1,7 @@
   export const ORGANIZATION_TYPES = [
-  'Hospital',
-  'Clinic',
-  'Diagnostic Center',
-  'Pharmacy',
-  'Healthcare Center',
+  'HOSPITAL',
+  'CLINIC',
+
 ];
 
 

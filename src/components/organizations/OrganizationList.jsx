@@ -9,6 +9,7 @@ export const OrganizationList = ({
   onView,
   onEdit,
   onDelete,
+  onDownloadReport,
   onAddClick,
 }) => {
   if (loading) {
@@ -37,6 +38,7 @@ export const OrganizationList = ({
           onView={onView}
           onEdit={onEdit}
           onDelete={onDelete}
+          onDownloadReport={onDownloadReport}
         />
       ))}
     </div>

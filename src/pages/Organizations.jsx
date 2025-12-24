@@ -140,6 +140,17 @@ const Organizations = () => {
     deleteOrganization(orgId);
   };
 
+
+const handleDownloadReport = async (orgId) => {
+  try {
+    await organizationService.downloadReport(orgId);
+  } catch (error) {
+    showStatusModal('error', error.message);
+  }
+};
+
+
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -162,6 +173,7 @@ const Organizations = () => {
         onView={handleView}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onDownloadReport={handleDownloadReport}
       />
 
       {/* Organization Form Modal */}

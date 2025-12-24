@@ -1,7 +1,7 @@
-import { Building2, Edit, Trash2, Eye } from 'lucide-react';
+import { Building2, Edit, Trash2, Eye ,FileText } from 'lucide-react';
 import { formatDate } from '../../utils/utilities';
 
-export const OrganizationCard = ({ organization, onView, onEdit, onDelete }) => {
+export const OrganizationCard = ({ organization, onView, onEdit, onDelete ,onDownloadReport, }) => {
   const { id, name, type, address, createdAt, facilityCount, admin, facilities } = organization;
 
   return (
@@ -10,29 +10,41 @@ export const OrganizationCard = ({ organization, onView, onEdit, onDelete }) => 
         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
           <Building2 className="w-6 h-6 text-blue-600" />
         </div>
-        <div className="flex space-x-2">
-          <button 
-            onClick={() => onView(organization.id)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition"
-            title="View Details"
-          >
-            <Eye className="w-4 h-4 text-gray-600" />
-          </button>
-          <button 
-            onClick={() => onEdit(organization)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition"
-            title="Edit"
-          >
-            <Edit className="w-4 h-4 text-gray-600" />
-          </button>
-          <button
-            onClick={() => onDelete(organization.id)}
-            className="p-2 hover:bg-red-50 rounded-lg transition"
-            title="Delete"
-          >
-            <Trash2 className="w-4 h-4 text-red-600" />
-          </button>
-        </div>
+       <div className="flex space-x-2">
+  <button
+    onClick={() => onView(id)}
+    className="p-2 hover:bg-gray-100 rounded-lg transition"
+    title="View Details"
+  >
+    <Eye className="w-4 h-4 text-gray-600" />
+  </button>
+
+  <button
+    onClick={() => onEdit(organization)}
+    className="p-2 hover:bg-gray-100 rounded-lg transition"
+    title="Edit"
+  >
+    <Edit className="w-4 h-4 text-gray-600" />
+  </button>
+
+  
+  <button
+    onClick={() => onDownloadReport(id)}
+    className="p-2 hover:bg-blue-50 rounded-lg transition"
+    title="Download PDF Report"
+  >
+    <FileText className="w-4 h-4 text-blue-600" />
+  </button>
+
+  <button
+    onClick={() => onDelete(id)}
+    className="p-2 hover:bg-red-50 rounded-lg transition"
+    title="Delete"
+  >
+    <Trash2 className="w-4 h-4 text-red-600" />
+  </button>
+</div>
+
       </div>
 
       <h3 className="text-lg font-bold text-gray-900 mb-1">{name}</h3>

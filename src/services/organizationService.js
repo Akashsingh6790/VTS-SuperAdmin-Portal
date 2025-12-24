@@ -116,6 +116,15 @@ export const organizationService = {
     }
   },
 
+  async getStats(){
+  try {
+    const response = await apiClient.get("/org/getDashboardStats")
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to fetch Dashboard details');
+  }
+  },
+
  
   async search(query) {
     try {
@@ -127,6 +136,45 @@ export const organizationService = {
       throw new Error(error.message || 'Failed to search organizations');
     }
   },
+  
+  async downloadReport(orgId) {
+  if (!orgId) {
+    throw new Error('Organization ID is required');
+  }
+
+  try {
+    const response = await apiClient.get(
+      `/org/${orgId}/report`,
+      {
+        responseType: 'blob', // 🔑 IMPORTANT for PDF
+        headers: {
+          Accept: 'application/pdf',
+        },
+      }
+    );
+
+    // Create downloadable file
+    const blob = new Blob([response.data], {
+      type: 'application/pdf',
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `organization-report-${orgId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+
+    a.remove();
+    window.URL.revokeObjectURL(url);
+
+    return true;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to download report');
+  }
+},
+
 
 
   async getPaginated(page = 1, limit = 10) {

@@ -1,59 +1,91 @@
 // src/pages/Dashboard.jsx
-import { Users, Activity, DollarSign, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Users, Activity, DollarSign, TrendingUp } from "lucide-react";
+import { organizationService } from "../services/organizationService";
 
 const Dashboard = () => {
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [loadingActivities, setLoadingActivities] = useState(true);
+
   const stats = [
     {
-      title: 'Total Users',
-      value: '2,543',
-      change: '+12.5%',
+      title: "Total Users",
+      value: "2,543",
+      change: "+12.5%",
       icon: Users,
-      color: 'bg-blue-500',
-      bgColor: 'bg-blue-50',
-      textColor: 'text-blue-600',
+      bgColor: "bg-blue-50",
+      textColor: "text-blue-600",
     },
     {
-      title: 'Active Sessions',
-      value: '842',
-      change: '+8.2%',
+      title: "Active Sessions",
+      value: "842",
+      change: "+8.2%",
       icon: Activity,
-      color: 'bg-green-500',
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-600',
+      bgColor: "bg-green-50",
+      textColor: "text-green-600",
     },
     {
-      title: 'Revenue',
-      value: '$45,231',
-      change: '+23.1%',
+      title: "Revenue",
+      value: "$45,231",
+      change: "+23.1%",
       icon: DollarSign,
-      color: 'bg-purple-500',
-      bgColor: 'bg-purple-50',
-      textColor: 'text-purple-600',
+      bgColor: "bg-purple-50",
+      textColor: "text-purple-600",
     },
     {
-      title: 'Growth',
-      value: '18.2%',
-      change: '+4.3%',
+      title: "Growth",
+      value: "18.2%",
+      change: "+4.3%",
       icon: TrendingUp,
-      color: 'bg-orange-500',
-      bgColor: 'bg-orange-50',
-      textColor: 'text-orange-600',
+      bgColor: "bg-orange-50",
+      textColor: "text-orange-600",
     },
   ];
 
-  const recentActivities = [
-    { user: 'John Doe', action: 'Created new account', time: '2 minutes ago' },
-    { user: 'Jane Smith', action: 'Updated profile', time: '15 minutes ago' },
-    { user: 'Mike Johnson', action: 'Uploaded document', time: '1 hour ago' },
-    { user: 'Sarah Wilson', action: 'Changed password', time: '2 hours ago' },
-  ];
+
+  const activityStyles = {
+  ORGANIZATION_CREATED: {
+    bg: "bg-green-100",
+    text: "text-green-700",
+    dot: "bg-green-500",
+  },
+  ORGANIZATION_UPDATED: {
+    bg: "bg-orange-100",
+    text: "text-orange-700",
+    dot: "bg-orange-500",
+  },
+  ORGANIZATION_DELETED: {
+    bg: "bg-red-100",
+    text: "text-red-700",
+    dot: "bg-red-500",
+  },
+};
+
+
+ 
+useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const res = await organizationService.getStats();
+      setRecentActivities(res.recentActivities || []);
+    } catch (error) {
+      console.error("Failed to load dashboard stats", error);
+    } finally {
+      setLoadingActivities(false);
+    }
+  };
+
+  fetchStats();
+}, []);
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Welcome back! Here's what's happening today.</p>
+        <p className="text-gray-600 mt-1">
+          Welcome back! Here's what's happening today.
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -67,9 +99,15 @@ const Dashboard = () => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <h3 className="text-2xl font-bold text-gray-900 mt-2">{stat.value}</h3>
-                  <p className="text-sm text-green-600 font-medium mt-2">{stat.change}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    {stat.title}
+                  </p>
+                  <h3 className="text-2xl font-bold text-gray-900 mt-2">
+                    {stat.value}
+                  </h3>
+                  <p className="text-sm text-green-600 font-medium mt-2">
+                    {stat.change}
+                  </p>
                 </div>
                 <div className={`${stat.bgColor} p-3 rounded-lg`}>
                   <Icon className={`w-6 h-6 ${stat.textColor}`} />
@@ -83,29 +121,73 @@ const Dashboard = () => {
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h2>
-          <div className="space-y-4">
-            {recentActivities.map((activity, index) => (
-              <div key={index} className="flex items-start space-x-4 p-4 hover:bg-gray-50 rounded-lg transition">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-blue-600 font-semibold text-sm">
-                    {activity.user.charAt(0)}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">{activity.user}</p>
-                  <p className="text-sm text-gray-600">{activity.action}</p>
-                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                </div>
-              </div>
-            ))}
+       {/* Recent Activity */}
+<div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+  <h2 className="text-xl font-bold text-gray-900 mb-6">
+    Recent Activity
+  </h2>
+
+  {loadingActivities ? (
+    <p className="text-gray-500">Loading recent activities...</p>
+  ) : recentActivities.length === 0 ? (
+    <p className="text-gray-500">No recent activity</p>
+  ) : (
+    <div className="space-y-4">
+      {recentActivities.map((activity) => {
+        const style =
+          activityStyles[activity.type] ||
+          activityStyles.ORGANIZATION_UPDATED;
+
+        return (
+          <div
+            key={activity.id}
+            className={`flex items-start gap-4 p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition ${style.bg}`}
+          >
+            {/* Timeline Dot */}
+            <div className="flex flex-col items-center">
+              <span
+                className={`w-3 h-3 rounded-full mt-1 ${style.dot}`}
+              />
+              <span className="h-full w-px bg-gray-200 mt-1" />
+            </div>
+
+            {/* Content */}
+            <div className="flex-1">
+              <p className={`text-sm font-semibold ${style.text}`}>
+                {activity.action}
+              </p>
+
+              <p className="text-sm text-gray-900 mt-1">
+              
+                <span className="font-semibold">
+                  {activity.title}
+                </span>
+              </p>
+
+              <p className="text-xs text-gray-500 mt-1">
+                {activity.time}
+              </p>
+            </div>
+
+            {/* Type Badge */}
+            <span
+              className={`text-xs font-medium px-3 py-1 rounded-full ${style.text} bg-white`}
+            >
+              {activity.type.replace("_", " ")}
+            </span>
           </div>
-        </div>
+        );
+      })}
+    </div>
+  )}
+</div>
+
 
         {/* Quick Actions */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Quick Actions
+          </h2>
           <div className="space-y-3">
             <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition">
               Add New Organization
